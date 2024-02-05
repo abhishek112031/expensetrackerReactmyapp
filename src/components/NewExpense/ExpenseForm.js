@@ -2,7 +2,7 @@ import React,{useState} from 'react';
 import './ExpenseForm.css';
 
 
-const  ExpenseForm=()=>{
+const  ExpenseForm=(props)=>{
 
 
     const [enteredTitle,setEnteredTitle]=useState('');
@@ -32,10 +32,14 @@ const  ExpenseForm=()=>{
             amount:enteredAmount,
             date:new Date(enteredDate)
         };
-        console.log('expenseData==>',expenseData)
+        // console.log('expenseData==>',expenseData)
         setEnteredTitle('');
         setEnteredAmount('');
         setEnteredDate('');
+
+        props.handelExpenseData(expenseData)
+
+
 
     }
     return(
