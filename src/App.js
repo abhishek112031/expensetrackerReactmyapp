@@ -1,48 +1,43 @@
 
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import Expenses from './components/Expenses/Expenses';
+import axios from 'axios';
+
 
 import NewExpense from './components/NewExpense/NewExpense';
-let dummy_expenses = [
-    {
-        id: 'e1',
-        title: 'school fee',
-        amount: 250,
-        date: new Date(2021, 5, 12)
-    },
-    {
-        id: 'e2',
-        title: 'car Insurence',
-        amount: 1250,
-        date: new Date(2021, 5, 13)
-    },
-    {
-        id: 'e3',
-        title: 'House Rent',
-        amount: 2150,
-        date: new Date(2021, 5, 13)
-    },
-    {
-        id: 'e4',
-        title: 'Movie tickets',
-        amount: 350,
-        date: new Date(2021, 5, 10)
-    }
-]
+
 function App() {
 
-    const [expenses,setExpense]=useState(dummy_expenses)
+    const [expenses,setExpense]=useState([]);
+    useEffect(() => {
+        // Fetch expenses data using Axios
+        axios.get('http://localhost:4000/get-expenses')
+            .then(response => {
+                setExpense(response.data.allExpenses);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }, []); // empty dependency array means this effect runs only once, similar to componentDidMount
 
 
     const formDataHandeler=(data)=>{
         const newExpenseData={
-            id:Math.random().toFixed(3).toString(),
+            
             ...data
         }
-        console.log('=======>',newExpenseData)
-        // dummy_expenses.unshift(newExpenseData);
+
+        axios.post('http://localhost:4000/add-expense', newExpenseData) // Update with your server address
+      .then(response => {
+        // setExpense(prevExpenses => [response.data.newExpense, ...prevExpenses]);
         const newDataArr=[newExpenseData,...expenses]
         setExpense(newDataArr);
+      })
+      .catch(error => {
+        console.error('Error adding new expense:', error);
+      });
+     
+   
 
     }
 
